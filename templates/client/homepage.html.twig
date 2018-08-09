@@ -1,0 +1,10 @@
+{%  extends 'base.html.twig' %}
+{% block body %}
+    {{ parent() }}
+    <section class="content">
+        <a href="{{ path('show')}}" class="btn btn-success">Show Clients</a>
+        <a href="{{ path('new')}}" class="btn btn-success">Add Client</a>
+        <a href="{{ path('delete')}}" class="btn btn-success">Delete Client</a>
+    </section>
+
+{% endblock %}

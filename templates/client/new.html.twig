@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+{% block title %}New Client {% endblock %}
+{% block body  %}
+    {{ parent()}}
+    <section class="content">
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
+    </section>
+{%  endblock %}
