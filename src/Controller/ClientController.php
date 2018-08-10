@@ -3,6 +3,8 @@
 namespace App\Controller;
 use  App\Entity\Client ;
 
+use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -55,7 +57,7 @@ class ClientController extends AbstractController
             ->add('nom',TextType::class ,array('attr'=>array('class'=>'form-control')))
             ->add('prenom',TextType::class ,array('attr'=>array('class'=>'form-control')))
             ->add('cin',NumberType::class ,array('attr'=>array('class'=>'form-control')))
-            ->add('date',DateType::class ,array('attr'=>array('class'=>'form-control')))
+            ->add('date',DateType::class ,array('attr'=>array( 'widget' => 'choice' )))
             ->add('adresse',TextType::class ,array('attr'=>array('class'=>'form-control')))
             ->add('ville',TextType::class ,array('attr'=>array('class'=>'form-control')))
             ->add('Save',SubmitType::class ,array('label'=>'Create' ,'attr'=>array('class'=>'btn btn-primary mt-3 ')))
@@ -72,10 +74,41 @@ class ClientController extends AbstractController
         return $this->render('client/new.html.twig',array('form'=>$form->createView())) ;
     }
     /**
-     * @Route("/client/delete" , name="delete")
+     * @Route("/client/delete/{id}" , name="delete")
+     * @Method({"DELETE"})
      */
-    public function delete()
+    public function delete( Request $request , $id )
     {
-        return $this->render('client/delete.html.twig') ;
+
+        $client=$this->getDoctrine()->getRepository(Client::class)->find($id) ;
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($client);
+        $em->flush();
+        $response = new Response() ;
+        return $response->send() ;
+    }
+    /**
+     *@Route("client/update/{id}",name="update")
+     */
+    public function  update($id , Request $request)
+    {
+        $client = new Client() ;
+        $client=$this->getDoctrine()->getRepository(Client::class)->find($id) ;
+        $form = $this->createFormBuilder($client)
+            ->add('nom',TextType::class ,array('attr'=>array('class'=>'form-control')))
+            ->add('prenom',TextType::class ,array('attr'=>array('class'=>'form-control')))
+            ->add('cin',NumberType::class ,array('attr'=>array('class'=>'form-control')))
+            ->add('date',DateType::class ,array('attr'=>array('class'=>'form-control')))
+            ->add('adresse',TextType::class ,array('attr'=>array('class'=>'form-control')))
+            ->add('ville',TextType::class ,array('attr'=>array('class'=>'form-control')))
+            ->add('Save',SubmitType::class ,array('label'=>'Update' ,'attr'=>array('class'=>'btn btn-primary mt-3 ')))
+            ->getForm() ;
+        $form->handleRequest($request) ;
+        if($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->flush();
+            return $this->redirectToRoute('show');
+        }
+       return $this->render("client/update.html.twig", array('form' => $form->createView())) ;
     }
 }

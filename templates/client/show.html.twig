@@ -19,15 +19,13 @@
                                     </a>
                                     <ul class="dropdown-menu pull-right">
                                         <li><a href="{{ path("new") }}">Add Client</a></li>
-                                        <li><a href="{{ path("delete") }}">Delete Client</a></li>
-                                        <li><a href="javascript:void(0);">Something else here</a></li>
                                     </ul>
                                 </li>
                             </ul>
                         </div>
                         <div class="body">
                             <div class="table-responsive">
-                                <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                                <table id="clients" class="table table-bordered table-striped table-hover js-basic-example dataTable">
                                     <thead>
                                     <tr>
                                         <th>Nom</th>
@@ -57,6 +55,9 @@
                                         <td>{{ client.date | date('Y-m-d')}}</td>
                                         <td>{{ client.adresse }}</td>
                                         <td>{{ client.ville }}</td>
+                                        <td><a href="{{ path('delete', {'id' : client.id})}}" class="btn btn-danger delete-client" data-id="{{ client.id }}">Delete Client</a></td>
+                                        <td><a href="{{ path('update', {'id' : client.id })}}" class="btn btn-success">Update Client</a>
+                                        </td>
                                     </tr>
                                     {% endfor %}
                                     </tbody>
@@ -70,3 +71,7 @@
         </div>
     </section>
 {%  endblock %}
+{%  block javascripts %}
+         <script src="{{ asset('js/alert.js') }}"></script>
+         {{ parent() }}
+{% endblock %}
